@@ -9,95 +9,226 @@
 a {
     text-decoration: none;
 }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
-    background: #141414;
+    height: 100vh;
+    background: radial-gradient(circle at center, #1a1a1a, #000);
+    font-family: system-ui, sans-serif;
     color: #fff;
 }
 
+/* NOISE + FOG */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08), transparent 40%),
+        radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.05), transparent 45%),
+        url("https://grainy-gradients.vercel.app/noise.svg");
+    opacity: 0.18;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+}
+
+/* COLOR AURA */
+body::after {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    background: radial-gradient(circle at 20% 40%, rgba(255, 60, 120, 0.15), transparent 45%),
+        radial-gradient(circle at 80% 60%, rgba(80, 120, 255, 0.15), transparent 50%);
+    filter: blur(120px);
+    z-index: -2;
+}
+
+/* GLASS BACKGROUND */
+.glass-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* floating glass slabs */
+.glass-bg span {
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(60px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35), inset 0 0 40px rgba(255, 255, 255, 0.1);
+    filter: saturate(120%);
+    opacity: 0.6;
+}
+
+/* placements */
+.glass-bg span:nth-child(1) {
+    top: -120px;
+    left: -100px;
+    transform: rotate(25deg);
+}
+
+.glass-bg span:nth-child(2) {
+    bottom: -140px;
+    right: -120px;
+    transform: rotate(-18deg);
+}
+
+.glass-bg span:nth-child(3) {
+    top: 30%;
+    left: 55%;
+    width: 300px;
+    height: 300px;
+    transform: rotate(12deg);
+}
+
+/* CENTER */
 .center {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
 }
 
-.imgBox {
+/* CARD */
+.card {
+    width: 400px;
+    height: 300px;
+    perspective: 1400px;
+    overflow: hidden; /* ✅ FIX */
+    border-radius: 22px;
+}
+
+/* INNER */
+.card-inner {
     position: relative;
-    width: 600px;
-    height: 400px;
-    background-size: cover;
-    border: 2px solid #fff;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
 }
 
-.imgBox img {
+/* IMAGE */
+.card-inner img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: 0.5s ease;
+    transform: scale(1);
 }
 
-.container {
+/* GLASS */
+.glass {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    transition: 0.5s ease;
+    inset: 0;
+    width: 80%;
+    height: 120%;
+    background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.25),
+        rgba(255, 255, 255, 0.05)
+    );
+    backdrop-filter: blur(12px);
+    transform: translateX(-150%) translateY(-10%) skewX(-25deg);
+    pointer-events: none;
 }
 
-.container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 1;
-    transform: translateX(-100%) scale(1) skew(-45deg);
-    transition: 0.5s ease;
-}
-
+/* CONTENT */
 .content {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 30px 50px;
-    text-align: center;
+    inset: 0;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateZ(60px);
 }
 
 .content h1 {
+    font-size: 2rem;
     margin-bottom: 20px;
-    font-size: 1.5em;
-    transform: translateY(-100%) scale(0);
-    transition: 0.5s ease-in-out;
-}
-
-.content p {
-    font-size: 1em;
-    transform: scale(3);
-    transition: 0.5s ease;
     opacity: 0;
 }
 
-.imgBox:hover .content h1 {
-    transform: translateY(0) scale(1);
+.content p {
+    max-width: 80%;
+    line-height: 1.6;
+    opacity: 0;
 }
 
-.imgBox:hover .content p {
-    transform: scale(1);
+/* SHINE */
+.shine {
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(60deg, transparent 45%, rgba(255, 255, 255, 0.4), transparent 55%);
+    transform: translateX(-100%);
+    pointer-events: none;
+}
+
+/* CTA BUTTON */
+.cta {
+    position: relative;
+    margin-top: 30px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 36px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(14px);
+    color: #fff;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    transform: translateZ(80px);
+    opacity: 0;
+}
+
+.cta span {
+    position: relative;
+    z-index: 2;
+}
+
+/* glow border */
+.cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* light sweep */
+.cta::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(60deg, transparent 45%, rgba(255, 255, 255, 0.6), transparent 55%);
+    transform: translateX(-120%);
+}
+
+/* hover micro */
+.cta:hover {
+    transform: translateZ(100px) scale(1.05);
+}
+
+.cta:hover::before {
     opacity: 1;
-}
-
-.imgBox:hover img {
-    transform: scale(2);
-}
-
-.imgBox:hover .container::before {
-    opacity: 1;
-    transform: translateX(0) scale(1) skew(-45deg);
-    background: rgba(82, 4, 4, 0.5);
-    backdrop-filter: blur(10px);
 }
